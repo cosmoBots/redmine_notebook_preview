@@ -17,7 +17,17 @@ module RedmineNotebookPreview
       notebooks = issue.attachments.select { |a| RedmineNotebookPreview::NbconvertService.notebook?(a) }
       return if notebooks.blank?
 
-      render partial: 'notebook_previews/preview_list', locals: { attachments: notebooks }
+      # Lazy conversion for any uncached notebooks
+      notebooks.each do |attachment|
+        if RedmineNotebookPreview::NbconvertService.cache_status(attachment.id) == :none
+          RedmineNotebookPreview::NbconvertService.convert(attachment)
+        end
+      end
+
+      context[:controller].view_context.tap { |vc| vc.extend(NotebookPreviewHelper) }.render(
+        partial: 'notebook_previews/preview_list',
+        locals:  { attachments: notebooks }
+      )
     end
 
   end

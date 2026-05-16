@@ -17,7 +17,7 @@ end
 require File.join(File.dirname(__FILE__), 'lib', 'redmine_notebook_preview', 'nbconvert_service')
 require File.join(File.dirname(__FILE__), 'lib', 'redmine_notebook_preview', 'attachment_hooks')
 require File.join(File.dirname(__FILE__), 'lib', 'redmine_notebook_preview', 'hooks')
-require File.join(File.dirname(__FILE__), 'lib', 'redmine_notebook_preview', 'macros')
+require File.join(File.dirname(__FILE__), 'config', 'macros_registration')
 
 # Patch Attachment model after Rails has loaded it
 ActiveSupport.on_load(:active_record) do

@@ -12,7 +12,6 @@ Redmine::WikiFormatting::Macros.register do
 
     raise 'Please provide a notebook filename. Example: {{notebook_preview(analysis.ipynb)}}' if filename.blank?
 
-    # obj is the wiki page, issue, document etc. — must respond to attachments
     unless obj.respond_to?(:attachments)
       raise "{{notebook_preview}} cannot be used in this context."
     end
@@ -32,7 +31,10 @@ Redmine::WikiFormatting::Macros.register do
       RedmineNotebookPreview::NbconvertService.convert(attachment)
     end
 
-    render partial: 'notebook_previews/preview', locals: { attachment: attachment }
+    controller.view_context.tap { |vc| vc.extend(NotebookPreviewHelper) }.render(
+      partial: 'notebook_previews/preview',
+      locals:  { attachment: attachment }
+    )
   end
 
 end
