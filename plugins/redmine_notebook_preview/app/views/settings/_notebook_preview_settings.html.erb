@@ -27,13 +27,11 @@
 
   <p class="info"><%= l(:text_notebook_preview_purge_warning) %></p>
 
-  <%= form_with(
-        url:    purge_all_notebook_previews_path,
-        method: :post,
-        remote: false
-      ) do |f| %>
-    <%= f.submit l(:button_notebook_preview_purge_all),
-          class: 'button-small button-danger',
-          data:  { confirm: l(:text_notebook_preview_purge_confirm) } %>
-  <% end %>
+  <%= link_to l(:button_notebook_preview_purge_all),
+        purge_all_notebook_previews_path,
+        class: 'button-small button-danger',
+        data: {
+          confirm: l(:text_notebook_preview_purge_confirm),
+          method:  'post'
+        } %>
 </div>
