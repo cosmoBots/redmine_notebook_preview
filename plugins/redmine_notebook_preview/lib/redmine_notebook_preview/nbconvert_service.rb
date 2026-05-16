@@ -1,6 +1,8 @@
 module RedmineNotebookPreview
   module NbconvertService
 
+    CONVERSION_TIMEOUT = 60 # seconds
+
     # Converts a .ipynb file to an HTML fragment and stores it in the cache.
     # Returns:
     #   :ok     if conversion succeeded
@@ -27,19 +29,14 @@ module RedmineNotebookPreview
         return :error
       end
 
-      # Run nbconvert, capture stdout and stderr
-      stdout, stderr, status = Open3.capture3(
-        { 'PYTHONIOENCODING' => 'utf-8' },
-        nbconvert_bin,
-        'nbconvert',
-        '--to', 'html',
-        '--template', 'basic',
-        '--stdin',
-        '--stdout',
-        stdin_data: File.read(ipynb_path, encoding: 'utf-8')
-      )
+      stdout, stderr, timed_out = run_nbconvert(nbconvert_bin, ipynb_path)
 
-      if status.success? && stdout.present?
+      if timed_out
+        write_error(error_path, "nbconvert timed out after #{CONVERSION_TIMEOUT} seconds.")
+        return :error
+      end
+
+      if stdout.present?
         if notebook_has_javascript?(ipynb_path)
           # Dynamic notebook: cache raw HTML and write marker file
           File.write(cache_path, stdout, encoding: 'utf-8')
@@ -184,6 +181,56 @@ module RedmineNotebookPreview
     def self.write_error(path, message)
       FileUtils.mkdir_p(File.dirname(path))
       File.write(path, message)
+    end
+
+    private
+
+    # Runs nbconvert with a timeout.
+    # Returns [stdout, stderr, timed_out]
+    def self.run_nbconvert(nbconvert_bin, ipynb_path)
+      stdout = ''.dup
+      stderr = ''.dup
+      timed_out = false
+
+      Open3.popen3(
+        { 'PYTHONIOENCODING' => 'utf-8' },
+        nbconvert_bin,
+        'nbconvert',
+        '--to', 'html',
+        '--template', 'basic',
+        '--stdin',
+        '--stdout'
+      ) do |stdin, out, err, wait_thr|
+        pid = wait_thr.pid
+
+        # Write notebook JSON to stdin and close it
+        begin
+          stdin.write(File.read(ipynb_path, encoding: 'utf-8'))
+        ensure
+          stdin.close
+        end
+
+        # Read stdout and stderr in background threads to avoid deadlock
+        stdout_thread = Thread.new { out.read }
+        stderr_thread = Thread.new { err.read }
+
+        # Wait for process with timeout
+        unless wait_thr.join(CONVERSION_TIMEOUT)
+          timed_out = true
+          begin
+            Process.kill('TERM', pid)
+            sleep 2
+            Process.kill('KILL', pid) rescue nil
+          rescue Errno::ESRCH
+            # Process already gone
+          end
+        end
+
+        stdout = stdout_thread.value
+        stderr = stderr_thread.value
+      end
+
+      [stdout, stderr, timed_out]
     end
 
   end
