@@ -1,8 +1,9 @@
 module RedmineNotebookPreview
   module AttachmentHooks
+    extend ActiveSupport::Concern
 
-    def self.included(base)
-      base.after_commit :purge_notebook_preview, on: :destroy
+    included do
+      after_commit :purge_notebook_preview, on: :destroy
     end
 
     private

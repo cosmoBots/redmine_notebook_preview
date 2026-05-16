@@ -2,6 +2,8 @@ module RedmineNotebookPreview
   module NbconvertService
 
     CONVERSION_TIMEOUT = 60 # seconds
+    ERROR_MAX_BYTES = 10_240 # 10 KB
+    MAX_NOTEBOOK_SIZE = 50 * 1024 * 1024 # 50 MB
 
     # Converts a .ipynb file to an HTML fragment and stores it in the cache.
     # Returns:
@@ -26,6 +28,11 @@ module RedmineNotebookPreview
       unless File.executable?(jupyter_bin)
         write_error(error_path, "jupyter binary not found or not executable: #{jupyter_bin}\n" \
                                 "Check plugin settings or JUPYTER_BIN environment variable.")
+        return :error
+      end
+
+      if File.size(ipynb_path) > MAX_NOTEBOOK_SIZE
+        write_error(error_path, "Notebook file is too large to preview (max #{MAX_NOTEBOOK_SIZE / 1024 / 1024} MB).")
         return :error
       end
 
@@ -180,7 +187,7 @@ module RedmineNotebookPreview
 
     def self.write_error(path, message)
       FileUtils.mkdir_p(File.dirname(path))
-      File.write(path, message)
+      File.write(path, message.to_s.byteslice(0, ERROR_MAX_BYTES))
     end
 
     private

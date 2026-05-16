@@ -179,12 +179,28 @@
   margin-top: 1em;
 }
 
-.button-danger {
+/* Scope button-danger to this plugin only */
+.notebook-preview-admin-actions .button-danger,
+.notebook-preview-admin-actions a.button-danger {
   background-color: #c0392b;
   color: #fff;
   border-color: #a93226;
 }
 
-.button-danger:hover {
+.notebook-preview-admin-actions .button-danger:hover,
+.notebook-preview-admin-actions a.button-danger:hover {
   background-color: #a93226;
+}
+
+/* Preview list */
+.notebook-preview-list {
+  margin: 1em 0;
+  padding: 0;
+  list-style: none;
+}
+
+.notebook-preview-list > li + li {
+  margin-top: 2em;
+  padding-top: 2em;
+  border-top: 1px solid #ddd;
 }

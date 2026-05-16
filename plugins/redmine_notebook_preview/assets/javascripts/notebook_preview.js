@@ -18,6 +18,16 @@
     }
   };
 
+  // Load MathJax with SRI integrity hash
+  (function() {
+    var script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js';
+    script.integrity = 'sha256-8+VdFOq8L8GFpXMDc8MiDMVyXHBGLLFMkYvBbMVQMiE=';
+    script.crossOrigin = 'anonymous';
+    script.async = true;
+    document.head.appendChild(script);
+  })();
+
   function loadMathJax() {
     var previews = document.querySelectorAll('.notebook-preview-content');
     if (previews.length === 0) return;

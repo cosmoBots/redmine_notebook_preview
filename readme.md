@@ -50,3 +50,7 @@ docker compose down
 ```bash
 docker compose down -v
 ```
+
+> **Air-gapped deployments:** MathJax is loaded from a CDN for LaTeX rendering.
+> In environments without internet access, mathematical notation will not render.
+> To support air-gapped deployments, download MathJax and serve it locally.
