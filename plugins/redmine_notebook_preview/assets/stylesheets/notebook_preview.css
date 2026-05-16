@@ -122,7 +122,7 @@
    Fix pilcrow/anchor signs injected by nbconvert
 -------------------------------------------------------- */
 .notebook-preview-content .anchor-link {
-  display: none;
+  display: none !important;
 }
 
 /* --------------------------------------------------------

@@ -3,8 +3,10 @@ module RedmineNotebookPreview
 
     # Inject Pygments stylesheet into <head> when notebooks are present
     def view_layouts_base_html_head(context = {})
-      # Always inject – lightweight, only a CSS file
-      stylesheet_link_tag('pygments', plugin: 'redmine_notebook_preview').html_safe
+      output  = stylesheet_link_tag('notebook_preview', plugin: 'redmine_notebook_preview')
+      output += stylesheet_link_tag('pygments',         plugin: 'redmine_notebook_preview')
+      output += javascript_include_tag('notebook_preview', plugin: 'redmine_notebook_preview')
+      output.html_safe
     end
 
     # Injected at the bottom of the attachments list
