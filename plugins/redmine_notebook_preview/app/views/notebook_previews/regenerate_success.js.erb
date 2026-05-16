@@ -1,0 +1,9 @@
+(function() {
+  var container = document.getElementById('<%= notebook_preview_container_id(@attachment) %>');
+  if (container) {
+    container.querySelector('.notebook-preview-none, .notebook-preview-error, .notebook-preview-content')
+      .outerHTML = '<div class="notebook-preview-content">' + <%= @html.to_json %> + '</div>';
+
+    window.NotebookPreview.typesetContainer('<%= notebook_preview_container_id(@attachment) %>');
+  }
+}());

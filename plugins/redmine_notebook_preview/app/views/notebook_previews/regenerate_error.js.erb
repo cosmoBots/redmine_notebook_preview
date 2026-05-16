@@ -1,0 +1,13 @@
+(function() {
+  var container = document.getElementById('<%= notebook_preview_container_id(@attachment) %>');
+  if (container) {
+    var errorContainer = container.querySelector('.notebook-preview-none, .notebook-preview-error, .notebook-preview-content');
+    if (errorContainer) {
+      errorContainer.outerHTML = '<div class="notebook-preview-error" id="<%= notebook_preview_error_container_id(@attachment) %>">' +
+        '<p class="icon icon-warning"><%= j(l(:error_notebook_preview_failed)) %></p>' +
+        '<pre class="notebook-preview-error-detail">' + <%= @error.to_json %> + '</pre>' +
+        '<%= j(render partial: "notebook_previews/regenerate_button", locals: { attachment: @attachment }) %>' +
+        '</div>';
+    }
+  }
+})();

@@ -1,0 +1,75 @@
+.notebook-preview-content pre { line-height: 125%; }
+.notebook-preview-content td.linenos .normal { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+.notebook-preview-content span.linenos { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+.notebook-preview-content td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.notebook-preview-content span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.notebook-preview-content .highlight .hll { background-color: #ffffcc }
+.notebook-preview-content .highlight { background: #f0f0f0; }
+.notebook-preview-content .highlight .c { color: #60A0B0; font-style: italic }
+.notebook-preview-content .highlight .err { border: 1px solid #F00 }
+.notebook-preview-content .highlight .k { color: #007020; font-weight: bold }
+.notebook-preview-content .highlight .o { color: #666 }
+.notebook-preview-content .highlight .ch { color: #60A0B0; font-style: italic }
+.notebook-preview-content .highlight .cm { color: #60A0B0; font-style: italic }
+.notebook-preview-content .highlight .cp { color: #007020 }
+.notebook-preview-content .highlight .cpf { color: #60A0B0; font-style: italic }
+.notebook-preview-content .highlight .c1 { color: #60A0B0; font-style: italic }
+.notebook-preview-content .highlight .cs { color: #60A0B0; background-color: #FFF0F0 }
+.notebook-preview-content .highlight .gd { color: #A00000 }
+.notebook-preview-content .highlight .ge { font-style: italic }
+.notebook-preview-content .highlight .ges { font-weight: bold; font-style: italic }
+.notebook-preview-content .highlight .gr { color: #F00 }
+.notebook-preview-content .highlight .gh { color: #000080; font-weight: bold }
+.notebook-preview-content .highlight .gi { color: #00A000 }
+.notebook-preview-content .highlight .go { color: #888 }
+.notebook-preview-content .highlight .gp { color: #C65D09; font-weight: bold }
+.notebook-preview-content .highlight .gs { font-weight: bold }
+.notebook-preview-content .highlight .gu { color: #800080; font-weight: bold }
+.notebook-preview-content .highlight .gt { color: #04D }
+.notebook-preview-content .highlight .kc { color: #007020; font-weight: bold }
+.notebook-preview-content .highlight .kd { color: #007020; font-weight: bold }
+.notebook-preview-content .highlight .kn { color: #007020; font-weight: bold }
+.notebook-preview-content .highlight .kp { color: #007020 }
+.notebook-preview-content .highlight .kr { color: #007020; font-weight: bold }
+.notebook-preview-content .highlight .kt { color: #902000 }
+.notebook-preview-content .highlight .m { color: #40A070 }
+.notebook-preview-content .highlight .s { color: #4070A0 }
+.notebook-preview-content .highlight .na { color: #4070A0 }
+.notebook-preview-content .highlight .nb { color: #007020 }
+.notebook-preview-content .highlight .nc { color: #0E84B5; font-weight: bold }
+.notebook-preview-content .highlight .no { color: #60ADD5 }
+.notebook-preview-content .highlight .nd { color: #555; font-weight: bold }
+.notebook-preview-content .highlight .ni { color: #D55537; font-weight: bold }
+.notebook-preview-content .highlight .ne { color: #007020 }
+.notebook-preview-content .highlight .nf { color: #06287E }
+.notebook-preview-content .highlight .nl { color: #002070; font-weight: bold }
+.notebook-preview-content .highlight .nn { color: #0E84B5; font-weight: bold }
+.notebook-preview-content .highlight .nt { color: #062873; font-weight: bold }
+.notebook-preview-content .highlight .nv { color: #BB60D5 }
+.notebook-preview-content .highlight .ow { color: #007020; font-weight: bold }
+.notebook-preview-content .highlight .w { color: #BBB }
+.notebook-preview-content .highlight .mb { color: #40A070 }
+.notebook-preview-content .highlight .mf { color: #40A070 }
+.notebook-preview-content .highlight .mh { color: #40A070 }
+.notebook-preview-content .highlight .mi { color: #40A070 }
+.notebook-preview-content .highlight .mo { color: #40A070 }
+.notebook-preview-content .highlight .sa { color: #4070A0 }
+.notebook-preview-content .highlight .sb { color: #4070A0 }
+.notebook-preview-content .highlight .sc { color: #4070A0 }
+.notebook-preview-content .highlight .dl { color: #4070A0 }
+.notebook-preview-content .highlight .sd { color: #4070A0; font-style: italic }
+.notebook-preview-content .highlight .s2 { color: #4070A0 }
+.notebook-preview-content .highlight .se { color: #4070A0; font-weight: bold }
+.notebook-preview-content .highlight .sh { color: #4070A0 }
+.notebook-preview-content .highlight .si { color: #70A0D0; font-style: italic }
+.notebook-preview-content .highlight .sx { color: #C65D09 }
+.notebook-preview-content .highlight .sr { color: #235388 }
+.notebook-preview-content .highlight .s1 { color: #4070A0 }
+.notebook-preview-content .highlight .ss { color: #517918 }
+.notebook-preview-content .highlight .bp { color: #007020 }
+.notebook-preview-content .highlight .fm { color: #06287E }
+.notebook-preview-content .highlight .vc { color: #BB60D5 }
+.notebook-preview-content .highlight .vg { color: #BB60D5 }
+.notebook-preview-content .highlight .vi { color: #BB60D5 }
+.notebook-preview-content .highlight .vm { color: #BB60D5 }
+.notebook-preview-content .highlight .il { color: #40A070 }

@@ -1,0 +1,15 @@
+<%= form_with(
+      url:    regenerate_notebook_preview_path(attachment.id),
+      method: :post,
+      remote: true,
+      html:   { class: 'notebook-preview-regenerate-form' }
+    ) do |f| %>
+
+  <%= f.submit l(:button_notebook_preview_regenerate),
+        class:                    'button-small',
+        data: {
+          disable_with:           l(:label_notebook_preview_regenerating),
+          notebook_attachment_id: attachment.id
+        } %>
+
+<% end %>

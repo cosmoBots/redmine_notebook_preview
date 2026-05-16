@@ -1,0 +1,190 @@
+/* --------------------------------------------------------
+   Wrapper and header
+-------------------------------------------------------- */
+.notebook-preview-wrapper {
+  margin: 1em 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.notebook-preview-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.5em 1em;
+  background-color: #f8f8f8;
+  border-bottom: 1px solid #ddd;
+  font-weight: bold;
+  font-size: 0.95em;
+}
+
+.notebook-preview-filename {
+  color: #333;
+}
+
+/* --------------------------------------------------------
+   Notebook content area
+   nbconvert basic template generates .jp-* classes
+-------------------------------------------------------- */
+.notebook-preview-content {
+  padding: 1em;
+  overflow-x: auto;
+  background-color: #fff;
+}
+
+/* Cell containers */
+.notebook-preview-content .jp-Cell {
+  margin-bottom: 1em;
+  padding: 0;
+}
+
+/* Input area (code cells) */
+.notebook-preview-content .jp-InputArea-prompt,
+.notebook-preview-content .jp-OutputArea-prompt {
+  color: #999;
+  font-family: monospace;
+  font-size: 0.85em;
+  min-width: 5em;
+  padding-right: 0.5em;
+  user-select: none;
+}
+
+/* Code cells */
+.notebook-preview-content .jp-CodeCell .jp-InputArea-editor {
+  background-color: #f7f7f7;
+  border: 1px solid #e0e0e0;
+  border-radius: 3px;
+  padding: 0.5em;
+  font-family: monospace;
+  font-size: 0.9em;
+  overflow-x: auto;
+}
+
+/* Output area */
+.notebook-preview-content .jp-OutputArea {
+  margin-top: 0.25em;
+}
+
+.notebook-preview-content .jp-OutputArea-output {
+  padding: 0.5em;
+  font-size: 0.9em;
+  overflow-x: auto;
+}
+
+/* Stream output (print statements) */
+.notebook-preview-content .jp-RenderedText pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: monospace;
+  font-size: 0.9em;
+}
+
+/* Images */
+.notebook-preview-content .jp-RenderedImage img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* HTML output (pandas dataframes etc) */
+.notebook-preview-content .jp-RenderedHTMLCommon table {
+  border-collapse: collapse;
+  margin: 0.5em 0;
+  font-size: 0.9em;
+}
+
+.notebook-preview-content .jp-RenderedHTMLCommon th,
+.notebook-preview-content .jp-RenderedHTMLCommon td {
+  border: 1px solid #ddd;
+  padding: 0.3em 0.6em;
+  text-align: left;
+}
+
+.notebook-preview-content .jp-RenderedHTMLCommon th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.notebook-preview-content .jp-RenderedHTMLCommon tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+/* Error output */
+.notebook-preview-content .jp-RenderedText[data-mime-type="application/vnd.jupyter.stderr"] pre {
+  color: #c0392b;
+  background-color: #fdf3f2;
+  border-left: 3px solid #c0392b;
+  padding: 0.5em;
+}
+
+/* --------------------------------------------------------
+   Fix pilcrow/anchor signs injected by nbconvert
+-------------------------------------------------------- */
+.notebook-preview-content .anchor-link {
+  display: none;
+}
+
+/* --------------------------------------------------------
+   Fix code highlighting – nbconvert basic outputs highlight divs
+-------------------------------------------------------- */
+.notebook-preview-content .highlight pre {
+  margin: 0;
+  padding: 0.5em;
+  overflow-x: auto;
+  font-family: monospace;
+  font-size: 0.9em;
+  line-height: 1.4;
+  background-color: #f0f0f0;
+}
+
+.notebook-preview-content pre {
+  background-color: #f7f7f7;
+  border: 1px solid #e0e0e0;
+  border-radius: 3px;
+  padding: 0.5em;
+  overflow-x: auto;
+  font-family: monospace;
+  font-size: 0.9em;
+}
+
+/* --------------------------------------------------------
+   Error and unavailable states
+-------------------------------------------------------- */
+.notebook-preview-error,
+.notebook-preview-none {
+  padding: 1em;
+  background-color: #fff;
+}
+
+.notebook-preview-error-detail {
+  margin: 0.5em 0 1em 0;
+  padding: 0.75em;
+  background-color: #fdf3f2;
+  border: 1px solid #e8c4c0;
+  border-radius: 3px;
+  font-family: monospace;
+  font-size: 0.85em;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: #c0392b;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+/* --------------------------------------------------------
+   Admin settings page
+-------------------------------------------------------- */
+.notebook-preview-admin-actions {
+  margin-top: 1em;
+}
+
+.button-danger {
+  background-color: #c0392b;
+  color: #fff;
+  border-color: #a93226;
+}
+
+.button-danger:hover {
+  background-color: #a93226;
+}

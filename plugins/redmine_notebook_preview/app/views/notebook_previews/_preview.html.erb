@@ -1,0 +1,37 @@
+<div class="notebook-preview-wrapper" id="<%= notebook_preview_container_id(attachment) %>">
+
+  <div class="notebook-preview-header">
+    <span class="notebook-preview-filename"><%= attachment.filename %></span>
+  </div>
+
+  <% status = notebook_preview_status(attachment) %>
+
+  <% if status == :ok %>
+    <div class="notebook-preview-content">
+      <%= notebook_preview_html(attachment).html_safe %>
+    </div>
+
+  <% elsif status == :error %>
+    <div class="notebook-preview-error" id="<%= notebook_preview_error_container_id(attachment) %>">
+      <p class="icon icon-warning">
+        <%= l(:error_notebook_preview_failed) %>
+      </p>
+      <pre class="notebook-preview-error-detail"><%= notebook_preview_error(attachment) %></pre>
+      <% if can_regenerate_notebook_preview?(attachment) %>
+        <%= render partial: 'notebook_previews/regenerate_button', locals: { attachment: attachment } %>
+      <% end %>
+    </div>
+
+  <% else %>
+    <div class="notebook-preview-none" id="<%= notebook_preview_error_container_id(attachment) %>">
+      <p class="icon icon-warning">
+        <%= l(:notice_notebook_preview_unavailable) %>
+      </p>
+      <% if can_regenerate_notebook_preview?(attachment) %>
+        <%= render partial: 'notebook_previews/regenerate_button', locals: { attachment: attachment } %>
+      <% end %>
+    </div>
+
+  <% end %>
+
+</div>

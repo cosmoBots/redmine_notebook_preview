@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: redmine
+      POSTGRES_USER: redmine
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-redmine}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  redmine:
+    build: ./redmine
+    depends_on:
+      - db
+    ports:
+      - "3000:3000"
+    environment:
+      REDMINE_DB_POSTGRES: db
+      REDMINE_DB_DATABASE: redmine
+      REDMINE_DB_USERNAME: redmine
+      REDMINE_DB_PASSWORD: ${DB_PASSWORD:-redmine}
+      REDMINE_SECRET_KEY_BASE: ${SECRET_KEY:-supersecretkey}
+      NBCONVERT_BIN: /opt/nbconvert-env/bin/jupyter
+      NOTEBOOK_CACHE_DIR: /usr/src/redmine/notebook_cache
+    volumes:
+      - ./plugins:/usr/src/redmine/plugins
+      - ./themes:/usr/src/redmine/public/themes
+      - redmine_data:/usr/src/redmine/files
+      - notebook_cache:/usr/src/redmine/notebook_cache
+    restart: unless-stopped
+
+volumes:
+  db_data:
+  redmine_data:
+  notebook_cache:

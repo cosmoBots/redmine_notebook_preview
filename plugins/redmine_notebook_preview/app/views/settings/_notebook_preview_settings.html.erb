@@ -1,0 +1,39 @@
+<p>
+  <label for="settings_nbconvert_bin">
+    <%= l(:label_notebook_preview_nbconvert_bin) %>
+  </label>
+  <%= text_field_tag 'settings[nbconvert_bin]',
+        @settings['nbconvert_bin'],
+        size: 60,
+        placeholder: '/opt/nbconvert-env/bin/jupyter' %>
+  <em class="info"><%= l(:text_notebook_preview_nbconvert_bin_hint) %></em>
+</p>
+
+<p>
+  <label for="settings_cache_dir">
+    <%= l(:label_notebook_preview_cache_dir) %>
+  </label>
+  <%= text_field_tag 'settings[cache_dir]',
+        @settings['cache_dir'],
+        size: 60,
+        placeholder: '/usr/src/redmine/notebook_cache' %>
+  <em class="info"><%= l(:text_notebook_preview_cache_dir_hint) %></em>
+</p>
+
+<hr />
+
+<div class="notebook-preview-admin-actions">
+  <h3><%= l(:label_notebook_preview_cache_management) %></h3>
+
+  <p class="info"><%= l(:text_notebook_preview_purge_warning) %></p>
+
+  <%= form_with(
+        url:    purge_all_notebook_previews_path,
+        method: :post,
+        remote: false
+      ) do |f| %>
+    <%= f.submit l(:button_notebook_preview_purge_all),
+          class: 'button-small button-danger',
+          data:  { confirm: l(:text_notebook_preview_purge_confirm) } %>
+  <% end %>
+</div>

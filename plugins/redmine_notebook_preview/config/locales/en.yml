@@ -1,0 +1,34 @@
+en:
+  # Buttons
+  button_notebook_preview_regenerate:   "Regenerate preview"
+  button_notebook_preview_purge_all:    "Purge all cached previews"
+
+  # Labels
+  label_notebook_preview_nbconvert_bin:    "nbconvert binary path"
+  label_notebook_preview_cache_dir:        "Cache directory"
+  label_notebook_preview_cache_management: "Cache management"
+  label_notebook_preview_regenerating:     "Regenerating..."
+
+  # Notices (success)
+  notice_notebook_preview_regenerated:  "Notebook preview regenerated successfully."
+  notice_notebook_preview_cache_purged: "All notebook preview caches have been purged."
+  notice_notebook_preview_unavailable:  "Preview not available."
+
+  # Errors
+  error_notebook_preview_failed: "Notebook preview generation failed."
+
+  # Hints and descriptive text
+  text_notebook_preview_nbconvert_bin_hint: >
+    Full path to the jupyter binary used for conversion.
+    Defaults to the NBCONVERT_BIN environment variable.
+  text_notebook_preview_cache_dir_hint: >
+    Directory where converted notebook HTML files are cached.
+    Defaults to the NOTEBOOK_CACHE_DIR environment variable.
+    Must be writable by the Redmine process.
+  text_notebook_preview_purge_warning: >
+    Purging the cache will remove all generated previews.
+    They will be regenerated the next time a user clicks
+    "Regenerate preview" on each notebook attachment.
+  text_notebook_preview_purge_confirm: >
+    Are you sure you want to purge all cached notebook previews?
+    This cannot be undone.
