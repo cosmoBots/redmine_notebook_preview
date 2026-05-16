@@ -15,6 +15,11 @@ module NotebookPreviewHelper
     RedmineNotebookPreview::NbconvertService.cache_status(attachment.id)
   end
 
+  # Returns true if the cached preview is from a dynamic (JavaScript) notebook
+  def notebook_preview_dynamic?(attachment)
+    RedmineNotebookPreview::NbconvertService.notebook_dynamic?(attachment.id)
+  end
+
   # Returns a unique DOM id for the preview container of an attachment
   def notebook_preview_container_id(attachment)
     "notebook-preview-#{attachment.id}"

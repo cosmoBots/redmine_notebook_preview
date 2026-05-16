@@ -23,7 +23,8 @@ class NotebookPreviewsController < ApplicationController
       end
       format.js do
         if result == :ok
-          @html = RedmineNotebookPreview::NbconvertService.cached_html(@attachment.id)
+          @html    = RedmineNotebookPreview::NbconvertService.cached_html(@attachment.id)
+          @dynamic = RedmineNotebookPreview::NbconvertService.notebook_dynamic?(@attachment.id)
           render :regenerate_success
         else
           @error = RedmineNotebookPreview::NbconvertService.cached_error(@attachment.id)

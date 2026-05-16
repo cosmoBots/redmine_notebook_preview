@@ -13,6 +13,9 @@ en:
   notice_notebook_preview_regenerated:  "Notebook preview regenerated successfully."
   notice_notebook_preview_cache_purged: "All notebook preview caches have been purged."
   notice_notebook_preview_unavailable:  "Preview not available."
+  notice_notebook_preview_dynamic: >
+    This notebook contains JavaScript outputs and cannot be rendered inline.
+    Only notebooks with static content (text, images, tables) are supported.
 
   # Errors
   error_notebook_preview_failed: "Notebook preview generation failed."

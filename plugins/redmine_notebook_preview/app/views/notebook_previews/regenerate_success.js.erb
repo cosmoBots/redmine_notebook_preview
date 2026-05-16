@@ -1,9 +1,14 @@
 (function() {
   var container = document.getElementById('<%= notebook_preview_container_id(@attachment) %>');
   if (container) {
-    container.querySelector('.notebook-preview-none, .notebook-preview-error, .notebook-preview-content')
-      .outerHTML = '<div class="notebook-preview-content">' + <%= @html.to_json %> + '</div>';
-
-    window.NotebookPreview.typesetContainer('<%= notebook_preview_container_id(@attachment) %>');
+    var target = container.querySelector('.notebook-preview-none, .notebook-preview-error, .notebook-preview-content, .notebook-preview-dynamic');
+    if (target) {
+      <% if @dynamic %>
+        target.outerHTML = '<div class="notebook-preview-dynamic"><p class="icon icon-warning"><%= j(l(:notice_notebook_preview_dynamic)) %></p></div>';
+      <% else %>
+        target.outerHTML = '<div class="notebook-preview-content">' + <%= @html.to_json %> + '</div>';
+        window.NotebookPreview.typesetContainer('<%= notebook_preview_container_id(@attachment) %>');
+      <% end %>
+    }
   }
 }());

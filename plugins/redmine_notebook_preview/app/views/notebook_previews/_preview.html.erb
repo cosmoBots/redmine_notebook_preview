@@ -7,9 +7,17 @@
   <% status = notebook_preview_status(attachment) %>
 
   <% if status == :ok %>
-    <div class="notebook-preview-content">
-      <%= notebook_preview_html(attachment).html_safe %>
-    </div>
+    <% if notebook_preview_dynamic?(attachment) %>
+      <div class="notebook-preview-dynamic">
+        <p class="icon icon-warning">
+          <%= l(:notice_notebook_preview_dynamic) %>
+        </p>
+      </div>
+    <% else %>
+      <div class="notebook-preview-content">
+        <%= notebook_preview_html(attachment).html_safe %>
+      </div>
+    <% end %>
 
   <% elsif status == :error %>
     <div class="notebook-preview-error" id="<%= notebook_preview_error_container_id(attachment) %>">

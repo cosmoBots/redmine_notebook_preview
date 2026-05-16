@@ -8,12 +8,13 @@ module RedmineNotebookPreview
     def self.convert(attachment)
       return unless notebook?(attachment)
 
-      ipynb_path  = attachment.diskfile
-      cache_path  = html_cache_path(attachment.id)
-      error_path  = error_cache_path(attachment.id)
+      ipynb_path   = attachment.diskfile
+      cache_path   = html_cache_path(attachment.id)
+      error_path   = error_cache_path(attachment.id)
+      dynamic_path = dynamic_marker_path(attachment.id)
 
       # Clean up any previous cache entries for this attachment
-      FileUtils.rm_f([cache_path, error_path])
+      FileUtils.rm_f([cache_path, error_path, dynamic_path])
 
       # Ensure cache directory exists
       FileUtils.mkdir_p(cache_dir)
@@ -28,7 +29,7 @@ module RedmineNotebookPreview
 
       # Run nbconvert, capture stdout and stderr
       stdout, stderr, status = Open3.capture3(
-        { 'PYTHONIOENCODING' => 'utf-8' },  # force UTF-8
+        { 'PYTHONIOENCODING' => 'utf-8' },
         nbconvert_bin,
         'nbconvert',
         '--to', 'html',
@@ -39,7 +40,14 @@ module RedmineNotebookPreview
       )
 
       if status.success? && stdout.present?
-        File.write(cache_path, stdout, encoding: 'utf-8')
+        if notebook_has_javascript?(ipynb_path)
+          # Dynamic notebook: cache raw HTML and write marker file
+          File.write(cache_path, stdout, encoding: 'utf-8')
+          FileUtils.touch(dynamic_path)
+        else
+          # Static notebook: sanitize before caching
+          File.write(cache_path, sanitize_html(stdout), encoding: 'utf-8')
+        end
         :ok
       else
         write_error(error_path, stderr.presence || 'Unknown nbconvert error')
@@ -53,13 +61,14 @@ module RedmineNotebookPreview
 
     # Removes cached files for a given attachment id
     def self.purge(attachment_id)
-      FileUtils.rm_f([html_cache_path(attachment_id), error_cache_path(attachment_id)])
+      FileUtils.rm_f([html_cache_path(attachment_id), error_cache_path(attachment_id), dynamic_marker_path(attachment_id)])
     end
 
     # Removes all cached files
     def self.purge_all
       FileUtils.rm_f(Dir.glob(File.join(cache_dir, '*.html')))
       FileUtils.rm_f(Dir.glob(File.join(cache_dir, '*.error')))
+      FileUtils.rm_f(Dir.glob(File.join(cache_dir, '*.dynamic')))
     end
 
     # Returns the cached HTML content or nil
@@ -85,11 +94,72 @@ module RedmineNotebookPreview
       end
     end
 
+    # Returns true if the cached preview is from a dynamic notebook
+    def self.notebook_dynamic?(attachment_id)
+      File.exist?(dynamic_marker_path(attachment_id))
+    end
+
     def self.notebook?(attachment)
       attachment.filename.to_s.end_with?('.ipynb')
     end
 
     private
+
+    # Inspects the raw notebook JSON for JavaScript content.
+    # Checks:
+    #   - cell outputs with mime type application/javascript
+    #   - cell outputs with text/html containing <script> tags
+    #   - code cells with %%javascript magic or IPython Javascript display calls
+    def self.notebook_has_javascript?(ipynb_path)
+      notebook = JSON.parse(File.read(ipynb_path, encoding: 'utf-8'))
+      cells = notebook['cells'] || []
+
+      cells.any? do |cell|
+        source = Array(cell['source']).join
+
+        # %%javascript magic or IPython Javascript() display call
+        next true if source.match?(/\A\s*%%javascript/i)
+        next true if source.match?(/Javascript\s*\(/i)
+
+        # Walk cell outputs for JS mime types or HTML with scripts
+        outputs = cell['outputs'] || []
+        outputs.any? do |output|
+          data = output['data'] || {}
+          next true if data.key?('application/javascript')
+
+          html_output = Array(data['text/html']).join
+          html_output.match?(/<script/i)
+        end
+      end
+
+    rescue JSON::ParserError
+      # If the notebook JSON is malformed we can't classify it safely,
+      # so treat it as dynamic to avoid rendering unsanitized content
+      true
+    end
+
+    # Sanitizes nbconvert HTML output, stripping JavaScript while preserving
+    # all structural, presentational and styling content.
+    def self.sanitize_html(html)
+      scrubber = Loofah::Scrubber.new do |node|
+        # Remove <script> tags entirely
+        if node.name == 'script'
+          node.remove
+          next
+        end
+
+        # Remove on* event attributes and javascript: hrefs from all elements
+        node.attribute_nodes.each do |attr|
+          if attr.name.start_with?('on')
+            attr.remove
+          elsif %w[href src action].include?(attr.name) && attr.value.to_s.strip.downcase.start_with?('javascript:')
+            attr.remove
+          end
+        end
+      end
+
+      Loofah.fragment(html).scrub!(scrubber).to_s
+    end
 
     def self.cache_dir
       setting('cache_dir')
@@ -101,6 +171,10 @@ module RedmineNotebookPreview
 
     def self.error_cache_path(attachment_id)
       File.join(cache_dir, "#{attachment_id}.error")
+    end
+
+    def self.dynamic_marker_path(attachment_id)
+      File.join(cache_dir, "#{attachment_id}.dynamic")
     end
 
     def self.setting(key)
