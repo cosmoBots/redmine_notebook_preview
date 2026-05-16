@@ -21,15 +21,15 @@ module RedmineNotebookPreview
       # Ensure cache directory exists
       FileUtils.mkdir_p(cache_dir)
 
-      nbconvert_bin = setting('nbconvert_bin')
+      jupyter_bin = setting('jupyter_bin')
 
-      unless File.executable?(nbconvert_bin)
-        write_error(error_path, "nbconvert binary not found or not executable: #{nbconvert_bin}\n" \
-                                "Check plugin settings or NBCONVERT_BIN environment variable.")
+      unless File.executable?(jupyter_bin)
+        write_error(error_path, "jupyter binary not found or not executable: #{jupyter_bin}\n" \
+                                "Check plugin settings or JUPYTER_BIN environment variable.")
         return :error
       end
 
-      stdout, stderr, timed_out = run_nbconvert(nbconvert_bin, ipynb_path)
+      stdout, stderr, timed_out = run_nbconvert(jupyter_bin, ipynb_path)
 
       if timed_out
         write_error(error_path, "nbconvert timed out after #{CONVERSION_TIMEOUT} seconds.")
@@ -187,14 +187,14 @@ module RedmineNotebookPreview
 
     # Runs nbconvert with a timeout.
     # Returns [stdout, stderr, timed_out]
-    def self.run_nbconvert(nbconvert_bin, ipynb_path)
+    def self.run_nbconvert(jupyter_bin, ipynb_path)
       stdout = ''.dup
       stderr = ''.dup
       timed_out = false
 
       Open3.popen3(
         { 'PYTHONIOENCODING' => 'utf-8' },
-        nbconvert_bin,
+        jupyter_bin,
         'nbconvert',
         '--to', 'html',
         '--template', 'basic',

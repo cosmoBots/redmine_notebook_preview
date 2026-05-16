@@ -23,7 +23,7 @@ services:
       REDMINE_DB_USERNAME: redmine
       REDMINE_DB_PASSWORD: ${DB_PASSWORD:-redmine}
       SECRET_KEY_BASE: ${SECRET_KEY:-supersecretkey}
-      NBCONVERT_BIN: /opt/nbconvert-env/bin/jupyter
+      JUPYTER_BIN: /opt/nbconvert-env/bin/jupyter
       NOTEBOOK_CACHE_DIR: /usr/src/redmine/notebook_cache
     volumes:
       - ./plugins:/usr/src/redmine/plugins

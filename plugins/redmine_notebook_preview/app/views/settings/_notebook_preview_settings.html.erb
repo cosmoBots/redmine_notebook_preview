@@ -1,12 +1,12 @@
 <p>
-  <label for="settings_nbconvert_bin">
-    <%= l(:label_notebook_preview_nbconvert_bin) %>
+  <label for="settings_jupyter_bin">
+    <%= l(:label_notebook_preview_jupyter_bin) %>
   </label>
-  <%= text_field_tag 'settings[nbconvert_bin]',
-        @settings['nbconvert_bin'],
+  <%= text_field_tag 'settings[jupyter_bin]',
+        @settings['jupyter_bin'],
         size: 60,
         placeholder: '/opt/nbconvert-env/bin/jupyter' %>
-  <em class="info"><%= l(:text_notebook_preview_nbconvert_bin_hint) %></em>
+  <em class="info"><%= l(:text_notebook_preview_jupyter_bin_hint) %></em>
 </p>
 
 <p>

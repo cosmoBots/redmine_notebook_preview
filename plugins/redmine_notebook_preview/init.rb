@@ -2,15 +2,15 @@ require 'open3'
 
 Redmine::Plugin.register :redmine_notebook_preview do
   name        'Redmine Notebook Preview'
-  author      'Your Name'
+  author      'Cosmobots'
   description 'Renders Jupyter notebook (.ipynb) previews inline in issues and wiki pages'
   version     '0.1.0'
-  url         'https://github.com/yourname/redmine_notebook_preview'
-  author_url  'https://github.com/yourname'
+  url         'https://github.com/cosmobots/redmine_notebook_preview'
+  author_url  'https://github.com/cosmobots'
 
   settings default: {
-    'nbconvert_bin' => ENV['NBCONVERT_BIN']      || 'jupyter',
-    'cache_dir'     => ENV['NOTEBOOK_CACHE_DIR'] || File.join(Rails.root, 'notebook_cache')
+    'jupyter_bin' => ENV['JUPYTER_BIN'] || 'jupyter',
+    'cache_dir'   => ENV['NOTEBOOK_CACHE_DIR'] || File.join(Rails.root, 'notebook_cache')
   }, partial: 'settings/notebook_preview_settings'
 end
 
