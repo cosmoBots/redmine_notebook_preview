@@ -155,6 +155,9 @@ docker compose -f .devcontainer/docker-compose.yml down
 
 # Reset everything including the database
 docker compose -f .devcontainer/docker-compose.yml down -v
+
+# Run tests (inside container)
+bundle exec rake test TEST=plugins/redmine_notebook_preview/test/**/*_test.rb RAILS_ENV=test
 ```
 
 ## Production Notes

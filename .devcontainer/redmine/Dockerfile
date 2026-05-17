@@ -23,3 +23,6 @@ ENV JUPYTER_BIN=/opt/nbconvert-env/bin/jupyter
 ENV NOTEBOOK_CACHE_DIR=/usr/src/redmine/notebook_cache
 
 USER redmine
+
+RUN bundle config set --local without '' && bundle install
+

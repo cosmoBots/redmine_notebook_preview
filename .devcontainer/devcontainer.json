@@ -4,6 +4,8 @@
   "service": "redmine",
   "workspaceFolder": "/usr/src/redmine",
 
+  "postStartCommand": "grep -q 'test:' config/database.yml || echo '\ntest:\n  adapter: postgresql\n  host: db\n  database: redmine_test\n  username: redmine\n  password: <%= ENV[\"DB_PASSWORD\"] %>\n  encoding: utf8' >> config/database.yml && bundle exec rake db:create RAILS_ENV=test && bundle exec rake db:migrate RAILS_ENV=test && bundle exec rake redmine:load_default_data RAILS_ENV=test REDMINE_LANG=en 2>/dev/null || true",
+
   "customizations": {
     "vscode": {
       "extensions": [
