@@ -2,7 +2,7 @@ require 'open3'
 
 Redmine::Plugin.register :redmine_notebook_preview do
   name        'Redmine Notebook Preview'
-  author      'Cosmobots'
+  author      'Miguel Torres'
   description 'Renders Jupyter notebook (.ipynb) previews inline in issues and wiki pages'
   version     '0.1.0'
   url         'https://github.com/cosmobots/redmine_notebook_preview'
