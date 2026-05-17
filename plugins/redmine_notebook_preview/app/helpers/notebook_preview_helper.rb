@@ -30,10 +30,28 @@ module NotebookPreviewHelper
     "notebook-preview-error-#{attachment.id}"
   end
 
-  # Returns true if the current user can regenerate the preview
-  # Any logged in user with visibility of the attachment can regenerate
+  # Returns true if the current user can regenerate the preview.
+  # Mirrors the permission check in NotebookPreviewsController#can_edit_attachment?
   def can_regenerate_notebook_preview?(attachment)
-    User.current.logged? && attachment.visible?(User.current)
+    return false unless User.current.logged?
+    return false unless attachment.visible?(User.current)
+    return true  if User.current.admin?
+
+    container = attachment.container
+    case container
+    when Issue
+      User.current.allowed_to?(:edit_issues, container.project) ||
+        (container.author == User.current &&
+          User.current.allowed_to?(:edit_own_issues, container.project))
+    when WikiPage
+      User.current.allowed_to?(:edit_wiki_pages, container.project)
+    when Document
+      User.current.allowed_to?(:edit_documents, container.project)
+    when Project
+      User.current.allowed_to?(:edit_project, container)
+    else
+      attachment.author == User.current
+    end
   end
 
 end

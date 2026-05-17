@@ -190,7 +190,6 @@ module RedmineNotebookPreview
       File.write(path, message.to_s.byteslice(0, ERROR_MAX_BYTES))
     end
 
-    private
 
     # Runs nbconvert with a timeout.
     # Returns [stdout, stderr, timed_out]
