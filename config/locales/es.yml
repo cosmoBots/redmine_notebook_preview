@@ -1,0 +1,37 @@
+es:
+  # Buttons
+  button_notebook_preview_regenerate:   "Regenerar vista previa"
+  button_notebook_preview_purge_all:    "Eliminar todas las vistas previas en caché"
+
+  # Labels
+  label_notebook_preview_jupyter_bin:      "Ruta del binario Jupyter"
+  label_notebook_preview_cache_dir:        "Directorio de caché"
+  label_notebook_preview_cache_management: "Gestión de caché"
+  label_notebook_preview_regenerating:     "Regenerando..."
+
+  # Notices (success)
+  notice_notebook_preview_regenerated:  "Vista previa del notebook regenerada correctamente."
+  notice_notebook_preview_cache_purged: "Todas las vistas previas en caché han sido eliminadas."
+  notice_notebook_preview_unavailable:  "Vista previa no disponible."
+  notice_notebook_preview_dynamic: >
+    Este notebook contiene salidas JavaScript y no puede mostrarse de forma estática.
+    Solo se admiten notebooks con contenido estático (texto, imágenes, tablas).
+
+  # Errors
+  error_notebook_preview_failed: "Error al generar la vista previa del notebook."
+
+  # Hints
+  text_notebook_preview_jupyter_bin_hint: >
+    Ruta completa al binario jupyter (p. ej. /opt/nbconvert-env/bin/jupyter).
+    El plugin ejecuta: jupyter nbconvert --to html ...
+    Por defecto usa la variable de entorno JUPYTER_BIN.
+  text_notebook_preview_cache_dir_hint: >
+    Directorio donde se almacenan en caché los archivos HTML convertidos.
+    Por defecto usa la variable de entorno NOTEBOOK_CACHE_DIR.
+    Debe tener permisos de escritura para el proceso de Redmine.
+  text_notebook_preview_purge_warning: >
+    Eliminar la caché borrará todas las vistas previas generadas.
+    Se regenerarán la próxima vez que un usuario visualice cada notebook adjunto.
+  text_notebook_preview_purge_confirm: >
+    ¿Está seguro de que desea eliminar todas las vistas previas en caché?
+    Esta acción no se puede deshacer.

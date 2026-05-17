@@ -1,19 +1,117 @@
-# Redmine Notebook Preview — Dev & Test Environment
+# Redmine Notebook Preview
 
-Local Redmine environment for developing and testing the `redmine_notebook_preview` plugin.
-Uses Docker and VS Code devcontainers for a consistent, reproducible setup.
+A Redmine plugin that renders Jupyter notebook (`.ipynb`) previews inline — directly on issue pages, wiki pages, and documents, without leaving Redmine.
+
+## Features
+
+- **Inline previews** of `.ipynb` attachments on issues, wiki pages, and documents
+- **Wiki macro** `{{notebook_preview(filename.ipynb)}}` for embedding previews in wiki content
+- **LaTeX rendering** via MathJax
+- **Cache management** — previews are generated once and cached; admins can purge the cache from the plugin settings page
+- **Permission-aware** — regenerate button is only shown to users with edit rights
+
+---
 
 ## Requirements
 
-- Docker Desktop with WSL2 backend
+- Redmine 6.x
+- Python 3 with `nbconvert` installed and accessible to the Redmine process
+- A writable directory for the preview cache
+
+---
+
+## Installation
+
+### 1. Copy the plugin
+
+```bash
+git clone https://github.com/cosmobots/redmine_notebook_preview \
+  plugins/redmine_notebook_preview
+```
+
+### 2. Install nbconvert
+
+The plugin delegates conversion to `jupyter nbconvert`. Install it in a virtual environment:
+
+```bash
+python3 -m venv /opt/nbconvert-env
+/opt/nbconvert-env/bin/pip install nbconvert nbformat jupyter_core
+```
+
+### 3. Restart Redmine
+
+Restart your Redmine process to load the plugin.
+
+### 4. Configure the plugin
+
+Go to **Administration → Plugins → Notebook Preview → Configure** and set:
+
+| Setting | Description |
+|---------|-------------|
+| Jupyter binary path | Full path to the `jupyter` binary, e.g. `/opt/nbconvert-env/bin/jupyter` |
+| Cache directory | Writable directory for cached HTML previews, e.g. `/var/cache/redmine/notebook_preview` |
+
+---
+
+## Usage
+
+### Automatic previews on issues
+
+Attach a `.ipynb` file to any issue. The preview will appear automatically below the issue description.
+
+### Wiki macro
+
+Embed a preview of a notebook attached to the current wiki page:
+
+```
+{{notebook_preview(analysis.ipynb)}}
+```
+
+### Regenerating a preview
+
+If a preview fails or becomes stale, users with edit rights will see a **Regenerate preview** button below the preview area.
+
+### Cache management
+
+Admins can purge all cached previews at once from **Administration → Plugins → Notebook Preview → Configure**.
+
+---
+
+## Notes
+
+> **Air-gapped deployments:** MathJax is loaded from a CDN for LaTeX rendering.
+> In environments without internet access, mathematical notation will not render.
+> To support air-gapped deployments, download MathJax locally and update
+> `assets/javascripts/notebook_preview.js` to load it from a local path.
+
+---
+
+## Uninstalling
+
+```bash
+bundle exec rake redmine:plugins:migrate NAME=redmine_notebook_preview VERSION=0 RAILS_ENV=production
+```
+
+Then delete the plugin folder and restart Redmine.
+
+---
+
+---
+
+# Development
+
+## Requirements
+
+- Docker
 - VS Code with the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+
 
 ## Quick Start
 
 ### 1. Configure environment variables
 
 ```bash
-cp .env.example .env
+cp .devcontainer/.env.example .devcontainer/.env
 # Edit .env and set DB_PASSWORD and SECRET_KEY
 ```
 
@@ -22,45 +120,16 @@ cp .env.example .env
 In VS Code: **F1 → Dev Containers: Reopen in Container**
 
 This will:
-- Build the Redmine image with Python and nbconvert pre-installed
+- Build a Redmine image with Python and nbconvert pre-installed
 - Start PostgreSQL and Redmine containers
-- Mount the `plugins/` and `themes/` folders into the container
+- Mount the plugin folder into the container
 - Forward port 3000 to your host
 
 Redmine will be available at **http://localhost:3000**  
 Default credentials: `admin` / `admin`
 
-### 3. Run plugin migrations (first time only)
-
-```bash
-docker compose -f .devcontainer/docker-compose.yml exec redmine \
-  bash -c "bundle install && rake redmine:plugins:migrate RAILS_ENV=production"
-```
-
-Then restart:
-```bash
-docker compose -f .devcontainer/docker-compose.yml restart redmine
-```
-
----
-
-## Plugin Configuration
-
-After first login go to **Administration → Plugins → Notebook Preview → Configure**:
-
-| Setting | Default | Description |
-|---------|---------|-------------|
-| Jupyter binary path | `/opt/nbconvert-env/bin/jupyter` | Full path to the `jupyter` binary |
-| Cache directory | `/usr/src/redmine/notebook_cache` | Where converted HTML previews are stored |
-
-The defaults are baked into the Docker image and work out of the box for this dev environment.
-For production deployments with a different Python environment, update these settings.
-
----
 
 ## Environment Variables
-
-Variables are loaded from `.env` (gitignored). Copy `.env.example` to get started.
 
 | Variable | Default | Description |
 |----------|---------|-------------|
@@ -69,30 +138,8 @@ Variables are loaded from `.env` (gitignored). Copy `.env.example` to get starte
 | `JUPYTER_BIN` | Set in Dockerfile | Override jupyter binary path |
 | `NOTEBOOK_CACHE_DIR` | Set in Dockerfile | Override cache directory |
 
-`JUPYTER_BIN` and `NOTEBOOK_CACHE_DIR` are already set in the Dockerfile — only add them
-to `.env` if you need to override the image defaults.
-
----
-
-## Installing / Removing Plugins
-
-**Install:**
-
-1. Copy or clone the plugin into `plugins/`
-```bash
-git clone https://github.com/cosmobots/redmine_notebook_preview \
-  plugins/redmine_notebook_preview
-```
-2. Run migrations and restart (see Quick Start step 3)
-
-**Remove:**
-```bash
-docker compose -f .devcontainer/docker-compose.yml exec redmine \
-  rake redmine:plugins:migrate NAME=plugin_name VERSION=0 RAILS_ENV=production
-```
-Then delete the plugin folder and restart.
-
----
+`JUPYTER_BIN` and `NOTEBOOK_CACHE_DIR` are baked into the Docker image and work out of the box.
+Only add them to `.env` if you need to override the image defaults.
 
 ## Useful Commands
 
@@ -110,23 +157,11 @@ docker compose -f .devcontainer/docker-compose.yml down
 docker compose -f .devcontainer/docker-compose.yml down -v
 ```
 
----
-
-## Production Deployment
+## Production Notes
 
 This Docker setup is intended for development only. For production:
 
-- Use a proper secret for `SECRET_KEY_BASE` — generate with `openssl rand -hex 64`
-- Mount a persistent volume for `redmine_data` (user uploaded files)
-- Configure a reverse proxy (nginx/caddy) in front of Redmine
-- Ensure `notebook_cache` is on a persistent volume or an external storage path
+- Generate a strong secret: `openssl rand -hex 64`
+- Mount persistent volumes for `redmine_data` and `notebook_cache`
+- Consider a reverse proxy (nginx, Caddy) in front of Redmine
 - Set `JUPYTER_BIN` to the correct path for your Python environment
-
----
-
-## Notes
-
-> **Air-gapped deployments:** MathJax is loaded from a CDN for LaTeX rendering in notebook
-> previews. In environments without internet access, mathematical notation will not render.
-> To support air-gapped deployments, download MathJax locally and update
-> `assets/javascripts/notebook_preview.js` to load it from a local path.
