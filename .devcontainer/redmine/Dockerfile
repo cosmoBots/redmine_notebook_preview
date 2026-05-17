@@ -17,6 +17,8 @@ RUN python3 -m venv /opt/nbconvert-env \
 RUN mkdir -p /usr/src/redmine/notebook_cache \
     && chown -R redmine:redmine /usr/src/redmine/notebook_cache
 
+# These are the authoritative defaults for the plugin settings.
+# Override via environment variables in docker-compose.yml if needed.
 ENV JUPYTER_BIN=/opt/nbconvert-env/bin/jupyter
 ENV NOTEBOOK_CACHE_DIR=/usr/src/redmine/notebook_cache
 

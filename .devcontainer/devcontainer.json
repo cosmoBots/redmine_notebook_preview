@@ -1,0 +1,24 @@
+{
+  "name": "Redmine Plugin Dev",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "redmine",
+  "workspaceFolder": "/usr/src/redmine",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "rebornix.Ruby",
+        "wingrunr21.vscode-ruby",
+        "ms-azuretools.vscode-docker",
+        "shopify.ruby-lsp"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "ruby.rubocop.enabled": true
+      }
+    }
+  },
+
+  "forwardPorts": [3000],
+  "remoteUser": "redmine"
+}

@@ -1,6 +1,8 @@
 services:
   db:
     image: postgres:15
+    env_file:
+      - .env
     environment:
       POSTGRES_DB: redmine
       POSTGRES_USER: redmine
@@ -10,22 +12,27 @@ services:
     restart: unless-stopped
 
   redmine:
-    build: ./redmine
+    build:
+      context: .
+      dockerfile: redmine/Dockerfile
     depends_on:
       - db
     ports:
       - "3000:3000"
+    env_file:
+      - .env
     environment:
       REDMINE_DB_POSTGRES: db
       REDMINE_DB_DATABASE: redmine
       REDMINE_DB_USERNAME: redmine
       REDMINE_DB_PASSWORD: ${DB_PASSWORD:-redmine}
       SECRET_KEY_BASE: ${SECRET_KEY:-supersecretkey}
-      JUPYTER_BIN: /opt/nbconvert-env/bin/jupyter
-      NOTEBOOK_CACHE_DIR: /usr/src/redmine/notebook_cache
+      # JUPYTER_BIN and NOTEBOOK_CACHE_DIR are set in the Dockerfile.
+      # Override here only if your deployment differs from the image defaults:
+      # JUPYTER_BIN: /custom/path/to/jupyter
+      # NOTEBOOK_CACHE_DIR: /custom/cache/path
     volumes:
-      - ./plugins:/usr/src/redmine/plugins
-      - ./themes:/usr/src/redmine/public/themes
+      - ..:/usr/src/redmine/plugins/redmine_notebook_preview
       - redmine_data:/usr/src/redmine/files
       - notebook_cache:/usr/src/redmine/notebook_cache
     restart: unless-stopped
