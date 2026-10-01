@@ -183,6 +183,43 @@ class NbconvertServiceTest < ActiveSupport::TestCase
     assert_includes result, '<table>'
   end
 
+  # ---------------------------------------------------------------------------
+  # normalize_image_data_uris
+  # ---------------------------------------------------------------------------
+  test 'normalize_image_data_uris removes a trailing newline inside the data URI' do
+    html = %(<img src="data:image/png;base64,iVBORw0KGgo=\n">)
+    result = NbconvertService.normalize_image_data_uris(html)
+    assert_equal %(<img src="data:image/png;base64,iVBORw0KGgo=">), result
+  end
+
+  test 'normalize_image_data_uris removes url-encoded newlines' do
+    html = '<img src="data:image/png;base64,iVBORw0KGgo=%0A">'
+    result = NbconvertService.normalize_image_data_uris(html)
+    assert_equal '<img src="data:image/png;base64,iVBORw0KGgo=">', result
+  end
+
+  test 'normalize_image_data_uris joins wrapped base64 lines' do
+    html = %(<img src="data:image/jpeg;base64,AAAA\nBBBB\r\nCCCC">)
+    result = NbconvertService.normalize_image_data_uris(html)
+    assert_equal '<img src="data:image/jpeg;base64,AAAABBBBCCCC">', result
+  end
+
+  # ---------------------------------------------------------------------------
+  # strip_anchor_links
+  # ---------------------------------------------------------------------------
+  test 'strip_anchor_links removes the pilcrow links after headings' do
+    html = '<h2 id="a">Title<a class="anchor-link" href="#a">¶</a></h2><p><a href="/x">keep</a></p>'
+    result = NbconvertService.strip_anchor_links(html)
+    assert_not_includes result, 'anchor-link'
+    assert_includes result, 'Title'
+    assert_includes result, '<a href="/x">keep</a>'
+  end
+
+  test 'normalize_image_data_uris leaves other attributes and text untouched' do
+    html = %(<p class="a b">text\nmore</p><a href="https://example.org/x?y=1">l</a>)
+    assert_equal html, NbconvertService.normalize_image_data_uris(html)
+  end
+
   private
 
   def stub_attachment(filename)

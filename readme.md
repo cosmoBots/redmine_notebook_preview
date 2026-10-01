@@ -8,6 +8,7 @@ A Redmine plugin that renders Jupyter notebook (`.ipynb`) previews inline — di
 - **Wiki macro** `{{notebook_preview(filename.ipynb)}}` for embedding previews in wiki content
 - **LaTeX rendering** via MathJax
 - **Cache management** — previews are generated once and cached; admins can purge the cache from the plugin settings page
+- **Report export** — usable in cosmoSys reports exported to PDF, ODT and DOCX; LaTeX formulas are converted to images
 - **Permission-aware** — regenerate button is only shown to users with edit rights
 
 ---
@@ -35,7 +36,7 @@ The plugin delegates conversion to `jupyter nbconvert`. Install it in a virtual 
 
 ```bash
 python3 -m venv /opt/nbconvert-env
-/opt/nbconvert-env/bin/pip install nbconvert nbformat jupyter_core
+/opt/nbconvert-env/bin/pip install nbconvert nbformat jupyter_core matplotlib
 ```
 
 ### 3. Restart Redmine
@@ -74,6 +75,22 @@ If a preview fails or becomes stale, users with edit rights will see a **Regener
 ### Cache management
 
 Admins can purge all cached previews at once from **Administration → Plugins → Notebook Preview → Configure**.
+
+### Report export (PDF, ODT, DOCX)
+
+When a page that uses `{{notebook_preview(...)}}` is exported to PDF, ODT or
+DOCX (for example a cosmoSys report), the preview is included as static HTML:
+
+- Images are embedded as plain base64 data URIs.
+- LaTeX formulas are converted to PNG images, because exporters cannot run
+  MathJax. This uses matplotlib's `mathtext`, so it needs `matplotlib` in the
+  same virtual environment as `jupyter` (see installation). It covers the common
+  subset of LaTeX (fractions, roots, sums, Greek letters, sub/superscripts).
+  Environments such as `align` or `matrix` are not supported and stay as text.
+  If `matplotlib` is missing, formulas also stay as text.
+
+Previews cached before this behaviour existed must be regenerated (purge the
+cache from the plugin settings page).
 
 ---
 

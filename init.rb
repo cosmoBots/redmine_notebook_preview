@@ -14,6 +14,7 @@ Redmine::Plugin.register :redmine_notebook_preview do
   }, partial: 'settings/notebook_preview_settings'
 end
 
+require File.join(File.dirname(__FILE__), 'lib', 'redmine_notebook_preview', 'latex_renderer')
 require File.join(File.dirname(__FILE__), 'lib', 'redmine_notebook_preview', 'nbconvert_service')
 require File.join(File.dirname(__FILE__), 'lib', 'redmine_notebook_preview', 'attachment_hooks')
 require File.join(File.dirname(__FILE__), 'lib', 'redmine_notebook_preview', 'hooks')

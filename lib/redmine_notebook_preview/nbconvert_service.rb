@@ -43,6 +43,8 @@ module RedmineNotebookPreview
         return :error
       end
 
+      stdout = normalize_image_data_uris(stdout) if stdout.present?
+
       if stdout.present?
         if notebook_has_javascript?(ipynb_path)
           # Dynamic notebook: cache raw HTML and write marker file
@@ -163,6 +165,42 @@ module RedmineNotebookPreview
       end
 
       Loofah.fragment(html).scrub!(scrubber).to_s
+    end
+
+    # Adapts cached notebook HTML to static exports (PDF, ODT, DOCX): drops the
+    # heading anchor links and replaces LaTeX formulas with images. Falls back
+    # to the unchanged HTML if rendering is unavailable (the Python environment
+    # needs matplotlib, see readme).
+    def self.prepare_for_export(html)
+      html = strip_anchor_links(html)
+      LatexRenderer.render_html(html, python_bin: latex_python_bin, cache_dir: cache_dir)
+    rescue StandardError => e
+      Rails.logger.warn("redmine_notebook_preview: export preparation failed: #{e.message}")
+      html
+    end
+
+    # nbconvert adds a pilcrow link after every heading; useless in a document
+    def self.strip_anchor_links(html)
+      return html unless html.include?('anchor-link')
+
+      fragment = Nokogiri::HTML5.fragment(html)
+      fragment.css('a.anchor-link').remove
+      fragment.to_html
+    end
+
+    # Python interpreter of the same virtualenv as the jupyter binary
+    def self.latex_python_bin
+      File.join(File.dirname(setting('jupyter_bin').to_s), 'python')
+    end
+
+    # nbconvert leaves a trailing newline inside image data URIs, which HTML
+    # serialisation later writes as %0A (data:image/png;base64,...%0A). That is
+    # not valid base64, and report exporters that only accept plain base64 data
+    # URIs then reject the image. Strip it before the HTML is sanitised/cached.
+    def self.normalize_image_data_uris(html)
+      html.gsub(%r{(data:image/[a-z0-9.+-]+;base64,)([^"']*)}i) do
+        "#{Regexp.last_match(1)}#{Regexp.last_match(2).gsub(/%0[AD]|\s/i, '')}"
+      end
     end
 
     def self.cache_dir

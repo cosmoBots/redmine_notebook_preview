@@ -12,7 +12,8 @@ RUN python3 -m venv /opt/nbconvert-env \
     && /opt/nbconvert-env/bin/pip install --no-cache-dir \
         nbconvert \
         nbformat \
-        jupyter_core
+        jupyter_core \
+        matplotlib
 
 RUN mkdir -p /usr/src/redmine/notebook_cache \
     && chown -R redmine:redmine /usr/src/redmine/notebook_cache
