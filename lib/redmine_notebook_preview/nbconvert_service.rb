@@ -179,7 +179,8 @@ module RedmineNotebookPreview
       html
     end
 
-    # nbconvert adds a pilcrow link after every heading; useless in a document
+    # nbconvert adds a pilcrow link after every heading; useless in a document.
+    # The web view hides them with CSS instead (see docs/notes/anchor-links.md)
     def self.strip_anchor_links(html)
       return html unless html.include?('anchor-link')
 
