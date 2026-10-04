@@ -76,6 +76,11 @@ class LatexRendererTest < ActiveSupport::TestCase
 
     assert_equal 2, result.scan('<img').size
     assert_includes result, 'data:image/png;base64,'
+
+    image = Nokogiri::HTML5.fragment(result).at_css('img')
+    png = Base64.strict_decode64(image['src'].split(',', 2).last)
+    assert_equal "\x89PNG\r\n\x1A\n".b, png.byteslice(0, 8)
+
     assert_includes result, '<pre>$$ not math $$</pre>'
     assert_not_includes result, '\\pi r^2 $$'
   end

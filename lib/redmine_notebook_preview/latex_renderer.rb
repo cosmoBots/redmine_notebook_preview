@@ -4,6 +4,7 @@ require 'fileutils'
 require 'json'
 require 'nokogiri'
 require 'open3'
+require 'tempfile'
 
 module RedmineNotebookPreview
   # Replaces LaTeX math in notebook HTML with PNG images.
@@ -92,7 +93,8 @@ module RedmineNotebookPreview
       end
 
       render_with_python(missing, python_bin, cache_dir).each do |key, png|
-        File.binwrite(File.join(store, "#{key}.png"), png)
+        path = File.join(store, "#{key}.png")
+        write_png_atomically(path, png)
         images[key] = png
       end
       images
@@ -164,6 +166,15 @@ module RedmineNotebookPreview
       block['style'] = 'text-align: center'
       block << image
       block
+    end
+
+    def self.write_png_atomically(path, png)
+      Tempfile.create(['latex-', '.tmp'], File.dirname(path)) do |temp|
+        temp.binmode
+        temp.write(png)
+        temp.flush
+        File.rename(temp.path, path)
+      end
     end
   end
 end
