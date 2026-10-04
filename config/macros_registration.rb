@@ -38,4 +38,14 @@ Redmine::WikiFormatting::Macros.register do
     )
   end
 
+  macro :latex do |_obj, args, _text|
+    formula = args.join(',')
+    content_tag(:span, "\\(#{formula}\\)", class: 'latex-preview-content')
+  end
+
+  macro :latex_block do |_obj, args, _text|
+    formula = args.join(',')
+    content_tag(:div, "\\[#{formula}\\]", class: 'latex-preview-content')
+  end
+
 end
