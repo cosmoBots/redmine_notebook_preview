@@ -33,6 +33,7 @@ Redmine::WikiFormatting::Macros.register do
 
     controller.view_context.tap { |vc| vc.extend(NotebookPreviewHelper) }.render(
       partial: 'notebook_previews/preview',
+      formats: [:html],
       locals:  { attachment: attachment }
     )
   end
