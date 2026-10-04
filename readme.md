@@ -92,6 +92,24 @@ DOCX (for example a cosmoSys report), the preview is included as static HTML:
 Previews cached before this behaviour existed must be regenerated (purge the
 cache from the plugin settings page).
 
+
+### LaTeX macros
+
+Render LaTeX formulas in wiki-formatted Redmine content using MathJax:
+
+- `{{latex(...)}}` renders an inline formula.
+- `{{latex_block(...)}}` renders a display-style formula.
+
+Examples:
+
+```text
+The area is {{latex(\pi r^2)}}.
+
+{{latex_block(\frac{a}{b})}}
+```
+
+MathJax is loaded when LaTeX or notebook preview content is present. These macros provide browser rendering; they do not add LaTeX image conversion to report exports.
+
 ---
 
 ## Notes
