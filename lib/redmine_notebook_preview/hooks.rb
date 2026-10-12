@@ -5,7 +5,6 @@ module RedmineNotebookPreview
     def view_layouts_base_html_head(context = {})
       output  = stylesheet_link_tag('notebook_preview', plugin: 'redmine_notebook_preview')
       output += stylesheet_link_tag('pygments',         plugin: 'redmine_notebook_preview')
-      output += javascript_include_tag('notebook_preview', plugin: 'redmine_notebook_preview')
       output.html_safe
     end
 

@@ -173,7 +173,7 @@ module RedmineNotebookPreview
     # needs matplotlib, see readme).
     def self.prepare_for_export(html)
       html = strip_anchor_links(html)
-      LatexRenderer.render_html(html, python_bin: latex_python_bin, cache_dir: cache_dir)
+      RedmineCbotsLatex::LatexRenderer.render_html(html, python_bin: latex_python_bin, cache_dir: cache_dir)
     rescue StandardError => e
       Rails.logger.warn("redmine_notebook_preview: export preparation failed: #{e.message}")
       html

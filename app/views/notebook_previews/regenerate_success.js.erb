@@ -10,7 +10,7 @@
   <% if @dynamic %>
     target.outerHTML = '<div class="notebook-preview-dynamic"><p class="icon icon-warning"><%= j(l(:notice_notebook_preview_dynamic)) %></p></div>';
   <% else %>
-    target.outerHTML = '<div class="notebook-preview-content">' + <%= @html.to_json %> + '</div>';
-    window.NotebookPreview.typesetContainer(<%= notebook_preview_container_id(@attachment).to_json %>);
+    target.outerHTML = '<div class="notebook-preview-content redmine-latex-content">' + <%= @html.to_json %> + '</div>';
+    window.RedmineCbotsLatex.typesetContainer(<%= notebook_preview_container_id(@attachment).to_json %>);
   <% end %>
 })();

@@ -1,10 +1,15 @@
 require 'open3'
 
+unless Redmine::Plugin.installed?(:redmine_cbots_latex)
+  raise Redmine::PluginRequirementError,
+        'redmine_notebook_preview requires the redmine_cbots_latex plugin'
+end
+
 Redmine::Plugin.register :redmine_notebook_preview do
   name        'Redmine Notebook Preview'
   author      'Miguel Torres'
   description 'Renders Jupyter notebook (.ipynb) previews inline in issues and wiki pages'
-  version     '0.1.0'
+  version     '0.2.0'
   url         'https://github.com/cosmobots/redmine_notebook_preview'
   author_url  'https://github.com/cosmobots'
 
@@ -14,7 +19,6 @@ Redmine::Plugin.register :redmine_notebook_preview do
   }, partial: 'settings/notebook_preview_settings'
 end
 
-require File.join(File.dirname(__FILE__), 'lib', 'redmine_notebook_preview', 'latex_renderer')
 require File.join(File.dirname(__FILE__), 'lib', 'redmine_notebook_preview', 'nbconvert_service')
 require File.join(File.dirname(__FILE__), 'lib', 'redmine_notebook_preview', 'attachment_hooks')
 require File.join(File.dirname(__FILE__), 'lib', 'redmine_notebook_preview', 'hooks')
