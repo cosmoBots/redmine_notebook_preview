@@ -2,11 +2,16 @@
 
 A Redmine plugin that renders Jupyter notebook (`.ipynb`) previews inline — directly on issue pages, wiki pages, and documents, without leaving Redmine.
 
+> **EXPERIMENTAL:** This integration is available for evaluation, not yet a
+> settled or generally supported feature. Keep it within the existing
+> deployment flow rather than creating deployment branches or extra variants
+> solely to isolate it. Compatibility and behavior may still change.
+
 ## Features
 
 - **Inline previews** of `.ipynb` attachments on issues, wiki pages, and documents
 - **Wiki macro** `{{notebook_preview(filename.ipynb)}}` for embedding previews in wiki content
-- **LaTeX rendering** via MathJax
+- LaTeX formulas in notebook previews are rendered by the separate `redmine_cbots_latex` plugin.
 - **Cache management** — previews are generated once and cached; admins can purge the cache from the plugin settings page
 - **Report export** — usable in cosmoSys reports exported to PDF, ODT and DOCX; LaTeX formulas are converted to images
 - **Permission-aware** — regenerate button is only shown to users with edit rights
@@ -16,6 +21,9 @@ A Redmine plugin that renders Jupyter notebook (`.ipynb`) previews inline — di
 ## Requirements
 
 - Redmine 6.x
+- `redmine_cbots_latex` is a required plugin dependency, not an optional
+  enhancement. Notebook Preview will refuse to load if it is missing; it also
+  provides MathJax and static formula rendering.
 - Python 3 with `nbconvert` installed and accessible to the Redmine process
 - A writable directory for the preview cache
 
@@ -29,6 +37,11 @@ A Redmine plugin that renders Jupyter notebook (`.ipynb`) previews inline — di
 git clone https://github.com/cosmobots/redmine_notebook_preview \
   plugins/redmine_notebook_preview
 ```
+
+Instala primero
+[`redmine_cbots_latex`](https://github.com/cosmoBots/redmine_cbots_latex) en
+`plugins/redmine_cbots_latex`. `redmine_notebook_preview` comprueba esta
+dependencia obligatoria al cargar y genera un error si no está instalada.
 
 ### 2. Install nbconvert
 
@@ -82,9 +95,9 @@ When a page that uses `{{notebook_preview(...)}}` is exported to PDF, ODT or
 DOCX (for example a cosmoSys report), the preview is included as static HTML:
 
 - Images are embedded as plain base64 data URIs.
-- LaTeX formulas are converted to PNG images, because exporters cannot run
-  MathJax. This uses matplotlib's `mathtext`, so it needs `matplotlib` in the
-  same virtual environment as `jupyter` (see installation). It covers the common
+- LaTeX formulas are converted to PNG images by `redmine_cbots_latex`, because
+  exporters cannot run MathJax. This uses matplotlib's `mathtext`, so it needs
+  `matplotlib` in the same virtual environment as `jupyter` (see installation). It covers the common
   subset of LaTeX (fractions, roots, sums, Greek letters, sub/superscripts).
   Environments such as `align` or `matrix` are not supported and stay as text.
   If `matplotlib` is missing, formulas also stay as text.
@@ -93,31 +106,14 @@ Previews cached before this behaviour existed must be regenerated (purge the
 cache from the plugin settings page).
 
 
-### LaTeX macros
-
-Render LaTeX formulas in wiki-formatted Redmine content using MathJax:
-
-- `{{latex(...)}}` renders an inline formula.
-- `{{latex_block(...)}}` renders a display-style formula.
-
-Examples:
-
-```text
-The area is {{latex(\pi r^2)}}.
-
-{{latex_block(\frac{a}{b})}}
-```
-
-MathJax is loaded when LaTeX or notebook preview content is present. These macros provide browser rendering; they do not add LaTeX image conversion to report exports.
-
 ---
 
 ## Notes
 
 > **Air-gapped deployments:** MathJax is loaded from a CDN for LaTeX rendering.
 > In environments without internet access, mathematical notation will not render.
-> To support air-gapped deployments, download MathJax locally and update
-> `assets/javascripts/notebook_preview.js` to load it from a local path.
+> To support air-gapped deployments, configure `redmine_cbots_latex` to load
+> MathJax locally.
 
 ---
 
@@ -203,3 +199,9 @@ This Docker setup is intended for development only. For production:
 - Mount persistent volumes for `redmine_data` and `notebook_cache`
 - Consider a reverse proxy (nginx, Caddy) in front of Redmine
 - Set `JUPYTER_BIN` to the correct path for your Python environment
+
+## License and contact
+
+This plugin is distributed under GNU GPL v3; see [`LICENSE.txt`](LICENSE.txt).
+For questions about this plugin, contact
+[cosmobots.eu@gmail.com](mailto:cosmobots.eu@gmail.com).
