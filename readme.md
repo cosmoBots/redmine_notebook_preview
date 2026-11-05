@@ -2,10 +2,10 @@
 
 A Redmine plugin that renders Jupyter notebook (`.ipynb`) previews inline — directly on issue pages, wiki pages, and documents, without leaving Redmine.
 
-> **EXPERIMENTAL:** This integration is available for evaluation, not yet a
-> settled or generally supported feature. Keep it within the existing
-> deployment flow rather than creating deployment branches or extra variants
-> solely to isolate it. Compatibility and behavior may still change.
+> **EXPERIMENTAL — opt-in:** This plugin is not part of the production core.
+> Expect defects, incomplete features, performance limits and breaking changes.
+> Do not install it if you require production-level stability and support.
+> Keep evaluation within the documented deployment flow.
 
 ## Features
 
