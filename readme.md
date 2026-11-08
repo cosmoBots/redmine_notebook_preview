@@ -129,76 +129,12 @@ Then delete the plugin folder and restart Redmine.
 
 ---
 
-# Development
+## Production configuration
 
-## Requirements
-
-- Docker
-- VS Code with the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
-
-
-## Quick Start
-
-### 1. Configure environment variables
-
-```bash
-cp .devcontainer/.env.example .devcontainer/.env
-# Edit .env and set DB_PASSWORD and SECRET_KEY
-```
-
-### 2. Open in devcontainer
-
-In VS Code: **F1 → Dev Containers: Reopen in Container**
-
-This will:
-- Build a Redmine image with Python and nbconvert pre-installed
-- Start PostgreSQL and Redmine containers
-- Mount the plugin folder into the container
-- Forward port 3000 to your host
-
-Redmine will be available at **http://localhost:3000**  
-Default credentials: `admin` / `admin`
-
-
-## Environment Variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `DB_PASSWORD` | `redmine` | PostgreSQL password |
-| `SECRET_KEY` | `supersecretkey` | Rails secret key base |
-| `JUPYTER_BIN` | Set in Dockerfile | Override jupyter binary path |
-| `NOTEBOOK_CACHE_DIR` | Set in Dockerfile | Override cache directory |
-
-`JUPYTER_BIN` and `NOTEBOOK_CACHE_DIR` are baked into the Docker image and work out of the box.
-Only add them to `.env` if you need to override the image defaults.
-
-## Useful Commands
-
-```bash
-# View logs
-docker compose -f .devcontainer/docker-compose.yml logs -f redmine
-
-# Open a shell in the Redmine container
-docker compose -f .devcontainer/docker-compose.yml exec redmine bash
-
-# Stop the environment
-docker compose -f .devcontainer/docker-compose.yml down
-
-# Reset everything including the database
-docker compose -f .devcontainer/docker-compose.yml down -v
-
-# Run tests (inside container)
-bundle exec rake test TEST=plugins/redmine_notebook_preview/test/**/*_test.rb RAILS_ENV=test
-```
-
-## Production Notes
-
-This Docker setup is intended for development only. For production:
-
-- Generate a strong secret: `openssl rand -hex 64`
-- Mount persistent volumes for `redmine_data` and `notebook_cache`
-- Consider a reverse proxy (nginx, Caddy) in front of Redmine
-- Set `JUPYTER_BIN` to the correct path for your Python environment
+Use persistent storage for Redmine files and the preview cache. Configure
+`JUPYTER_BIN` for the Python environment containing nbconvert and matplotlib,
+and `NOTEBOOK_CACHE_DIR` for a directory writable by the Redmine process.
+The included Dev Container is for development, not a production deployment.
 
 ## License and contact
 
