@@ -72,6 +72,11 @@ Go to **Administration → Plugins → Notebook Preview → Configure** and set:
 ### Automatic previews on issues
 
 Attach a `.ipynb` file to any issue. The preview will appear automatically below the issue description.
+A notebook that the description already embeds with `{{notebook_preview(...)}}` is not shown a second time.
+
+With cosmoSys, the same previews appear below each item description in the cosmoSys report and in its
+ODT, DOCX and PDF exports, where the formulas become images. The plugin does not depend on cosmoSys:
+it listens to the `view_cosmosys_report_item_after_description` hook, which only cosmoSys calls.
 
 ### Wiki macro
 

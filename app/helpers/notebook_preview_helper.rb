@@ -3,16 +3,22 @@ module NotebookPreviewHelper
   # Returns the full preview HTML for an attachment, or nil
   # When the page is being exported (report PDF/ODT/DOCX) the HTML is adapted
   # to a static document, e.g. LaTeX formulas become images because exporters
-  # cannot run MathJax.
-  def notebook_preview_html(attachment)
+  # cannot run MathJax. export: true/false overrides the guess from the request.
+  def notebook_preview_html(attachment, export: nil)
     html = RedmineNotebookPreview::NbconvertService.cached_html(attachment.id)
-    html = RedmineNotebookPreview::NbconvertService.prepare_for_export(html) if html && notebook_preview_export_request?
+    html = RedmineNotebookPreview::NbconvertService.prepare_for_export(html) if html && notebook_preview_export?(export)
     html
   end
 
   # True when the request asks for a static document format instead of a web page
   def notebook_preview_export_request?
     %w[pdf odt docx].include?(params[:format].to_s)
+  end
+
+  # The caller knows when it renders a static export (the cosmoSys report hook
+  # says so); the macro does not, and falls back to the request.
+  def notebook_preview_export?(export)
+    export.nil? ? notebook_preview_export_request? : export
   end
 
   # Returns the error message for an attachment, or nil
