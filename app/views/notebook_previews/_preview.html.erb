@@ -1,3 +1,4 @@
+<% export = local_assigns.fetch(:export, nil) %>
 <div class="notebook-preview-wrapper" id="<%= notebook_preview_container_id(attachment) %>">
 
   <div class="notebook-preview-header">
@@ -15,7 +16,7 @@
       </div>
     <% else %>
       <div class="notebook-preview-content redmine-latex-content">
-        <%= notebook_preview_html(attachment).html_safe %>
+        <%= notebook_preview_html(attachment, export: export).html_safe %>
       </div>
     <% end %>
 
@@ -25,7 +26,7 @@
         <%= l(:error_notebook_preview_failed) %>
       </p>
       <pre class="notebook-preview-error-detail"><%= notebook_preview_error(attachment) %></pre>
-      <% if can_regenerate_notebook_preview?(attachment) %>
+      <% if !notebook_preview_export?(export) && can_regenerate_notebook_preview?(attachment) %>
         <%= render partial: 'notebook_previews/regenerate_button', locals: { attachment: attachment } %>
       <% end %>
     </div>
@@ -35,7 +36,7 @@
       <p class="icon icon-warning">
         <%= l(:notice_notebook_preview_unavailable) %>
       </p>
-      <% if can_regenerate_notebook_preview?(attachment) %>
+      <% if !notebook_preview_export?(export) && can_regenerate_notebook_preview?(attachment) %>
         <%= render partial: 'notebook_previews/regenerate_button', locals: { attachment: attachment } %>
       <% end %>
     </div>

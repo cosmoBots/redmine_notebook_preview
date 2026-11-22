@@ -1,7 +1,7 @@
 <% if attachments.any? %>
   <div class="notebook-preview-list">
     <% attachments.each do |attachment| %>
-      <%= render partial: 'notebook_previews/preview', locals: { attachment: attachment } %>
+      <%= render partial: 'notebook_previews/preview', locals: { attachment: attachment, export: local_assigns.fetch(:export, nil) } %>
     <% end %>
   </div>
 <% end %>
