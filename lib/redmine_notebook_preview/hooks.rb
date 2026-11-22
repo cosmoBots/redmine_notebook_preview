@@ -19,7 +19,7 @@ module RedmineNotebookPreview
     # notebooks shown on the issue page reach the report and its exports too.
     # Only cosmoSys calls this hook; without it the plugin works as before.
     def view_cosmosys_report_item_after_description(context = {})
-      render_issue_notebooks(context, export: context[:server_export] ? true : false)
+      render_issue_notebooks(context, export: context[:server_export] ? true : false, show_filename: false)
     end
 
     # Notebooks attached to the issue that its description does not already
@@ -34,7 +34,7 @@ module RedmineNotebookPreview
 
     private
 
-    def render_issue_notebooks(context, export: nil)
+    def render_issue_notebooks(context, export: nil, show_filename: true)
       issue = context[:issue]
       return if issue.blank?
 
@@ -53,7 +53,7 @@ module RedmineNotebookPreview
       context[:controller].view_context.tap { |vc| vc.extend(NotebookPreviewHelper) }.render(
         partial: 'notebook_previews/preview_list',
         formats: [:html],
-        locals:  { attachments: notebooks, export: export }
+        locals:  { attachments: notebooks, export: export, show_filename: show_filename }
       )
     end
   end

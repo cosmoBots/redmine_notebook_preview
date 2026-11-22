@@ -1,9 +1,12 @@
 <% export = local_assigns.fetch(:export, nil) %>
 <div class="notebook-preview-wrapper" id="<%= notebook_preview_container_id(attachment) %>">
 
-  <div class="notebook-preview-header">
-    <span class="notebook-preview-filename"><%= attachment.filename %></span>
-  </div>
+  <%# The cosmoSys report leaves the filename out: the item already titles it. %>
+  <% if local_assigns.fetch(:show_filename, true) %>
+    <div class="notebook-preview-header">
+      <span class="notebook-preview-filename"><%= attachment.filename %></span>
+    </div>
+  <% end %>
 
   <% status = notebook_preview_status(attachment) %>
 
