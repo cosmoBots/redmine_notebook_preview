@@ -48,8 +48,11 @@ module RedmineNotebookPreview
         end
       end
 
+      # formats: the cosmoSys export request has format=pdf, which would look
+      # for a PDF partial; the previews are HTML whatever the request asks.
       context[:controller].view_context.tap { |vc| vc.extend(NotebookPreviewHelper) }.render(
         partial: 'notebook_previews/preview_list',
+        formats: [:html],
         locals:  { attachments: notebooks, export: export }
       )
     end
